@@ -1,75 +1,85 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+} from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function DisplayForm() {
   const location = useLocation();
   const navigate = useNavigate();
+  const initialData = location.state?.formData;
 
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [formData, setFormData] = useState(initialData);
 
-  // Fetch all data from the MockAPI when the page loads
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('https://6729a5066d5fa4901b6dcac9.mockapi.io/LoginForm/Login');
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-        const result = await response.json();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Handle Edit button click
+  const handleEdit = () => {
+    navigate("/register", { state: { formData } }); // Pass formData to the Register form for editing
+  };
 
-    fetchData();
-  }, []);
+  // Handle Delete button click
+  const handleDelete = () => {
+    if (window.confirm("Are you sure you want to delete this data?")) {
+      setFormData(null); // Remove the data
+    }
+  };
 
-  if (loading) {
-    return <p>Loading...</p>;
+  if (!formData) {
+    return <h2>No data available!</h2>;
   }
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h2>Submitted Data</h2>
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
-        {data.map((user) => (
-          <li
-            key={user.id}
-            style={{
-              border: '1px solid #ccc',
-              borderRadius: '5px',
-              padding: '10px',
-              marginBottom: '10px',
-            }}
-          >
-            <p><strong>Name:</strong> {user.name}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Phone No:</strong> {user.number}</p>
-            <p><strong>Password:</strong> {user.password}</p>
-            <p><strong>Address:</strong> {user.address}</p>
-            <p><strong>State:</strong> {user.state}</p>
-            <p><strong>Country:</strong> {user.country}</p>
-          </li>
-        ))}
-      </ul>
-      <button
-        onClick={() => navigate(-1)}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: '#203864',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
-        Go Back
-      </button>
-    </div>
+    <TableContainer component={Paper} style={{ maxWidth: "80%", margin: "20px auto",marginTop:'50px' }}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell><b>S/No</b></TableCell>
+            <TableCell><b>NAME</b></TableCell>
+            <TableCell><b>EMAIL</b></TableCell>
+            <TableCell><b>PASSWORD</b></TableCell>
+            <TableCell><b>ADDRESS</b></TableCell>
+            <TableCell><b>ACTION</b></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell>1</TableCell>
+            <TableCell>{formData.firstName} {formData.lastName}</TableCell>
+            <TableCell>{formData.email}</TableCell>
+            <TableCell>{formData.password}</TableCell>
+            <TableCell>{formData.address}</TableCell>
+            <TableCell>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                {/* Action buttons layout */}
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <IconButton
+                    color="primary"
+                    onClick={handleEdit}
+                    style={{ marginRight: "10px" }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={handleDelete}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              </div>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 

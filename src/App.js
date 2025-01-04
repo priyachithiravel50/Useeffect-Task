@@ -4,6 +4,10 @@ import Login from './Component.js/Login';
 import Register from './Component.js/Register';
 import DisplayForm from './Component.js/displayform';
 import Display from './Component.js/display';
+// import 'primereact/resources/primereact.min.css'; // Core styles
+// import 'primeicons/primeicons.css'; // Icons
+// import 'primeflex/primeflex.css'; // Flex utility (optional)
+
 
 function App() {
   return (
