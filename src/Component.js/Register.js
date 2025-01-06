@@ -1,175 +1,23 @@
-// import React, { useState } from 'react';
-// import { useNavigate } from "react-router-dom";
-
-// function Register() {
-//   const navigate = useNavigate();
-//      const goToLogin = () => {
-//         navigate("/useeffect");
-//       };
-    
-
-//   // State for form data
-//   const [form, setForm] = useState({
-//     name: '',
-//     email: '',
-//     number: '',
-//     password: '',
-//     confirmPassword: '',
-//     address: '',
-//     state: '',
-//     country: '',
-//   });
-
-//   // State for error messages
-//   const [errors, setErrors] = useState({});
-
-
-//   const handleChange = (e) => {
-//     const { id, value } = e.target;
-//     setForm((prev) => ({ ...prev, [id]: value }));
-
-//     // Clear the error for the current field
-//     setErrors((prev) => ({ ...prev, [id]: '' }));
-//   };
-
-//   // Handle form submission
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     const { name, email, number, password, confirmPassword, address, state, country } = form;
-
-//     // Validation
-//     const newErrors = {};
-//     if (!name) newErrors.name = "Name is required";
-//     if (!email) newErrors.email = "Email is required";
-//     if (!number) newErrors.number = "Phone number is required";
-//     if (!password) newErrors.password = "Password is required";
-//     if (!confirmPassword) newErrors.confirmPassword = "Confirm Password is required";
-//     if (password && confirmPassword && password !== confirmPassword) {
-//       newErrors.confirmPassword = "Passwords do not match";
-//     }
-//     if (!address) newErrors.address = "Address is required";
-//     if (!state) newErrors.state = "State is required";
-//     if (!country) newErrors.country = "Country is required";
-
-//     if (Object.keys(newErrors).length > 0) {
-//       setErrors(newErrors);
-//       return;
-//     }
-
-//     try {
-//       const response = await fetch('https://6729a5066d5fa4901b6dcac9.mockapi.io/LoginForm/Login', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ name, email, number, password, address, state, country }),
-//       });
-
-//       if (!response.ok) {
-//         throw new Error(`HTTP error! status: ${response.status}`);
-//       }
-
-//       const data = await response.json();
-//       console.log("Form data submitted:", data);
-//       alert("Form Submitted Successfully!");
-
-//       // Navigate to the display page with form data
-//       navigate('/displayform', { state: { formData: data } });
-
-//       // Reset form
-//       setForm({
-//         name: '',
-//         email: '',
-//         number: '',
-//         password: '',
-//         confirmPassword: '',
-//         address: '',
-//         state: '',
-//         country: '',
-//       });
-//       setErrors({});
-//     } catch (error) {
-//       console.error("Error submitting form:", error);
-//       alert("Failed to submit form.");
-//     }
-//   };
-
-//   return (
-//     <div className='text1'>
-//       <h1 style={{ marginLeft: '70px', color: '#203864', display: 'block', marginTop: '10px' }}>Register Form</h1>
-//       <form onSubmit={handleSubmit}>
-//         <label>Name:</label>
-//         <input type='text' id='name' value={form.name} onChange={handleChange} autoComplete='off' />
-//         {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
-
-//         <label>Email:</label>
-//         <input type='text' id='email' value={form.email} onChange={handleChange} autoComplete='off' />
-//         {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
-
-//         <label>Phone no:</label>
-//         <input type='number' id='number' value={form.number} onChange={handleChange} autoComplete='off' />
-//         {errors.number && <p style={{ color: 'red' }}>{errors.number}</p>}
-
-//         <label>Password:</label>
-//         <input type='password' id='password' value={form.password} onChange={handleChange} autoComplete='off' />
-//         {errors.password && <p style={{ color: 'red' }}>{errors.password}</p>}
-
-//         <label>Confirm Password:</label>
-//         <input type='password' id='confirmPassword' value={form.confirmPassword} onChange={handleChange} autoComplete='off' />
-//         {errors.confirmPassword && <p style={{ color: 'red' }}>{errors.confirmPassword}</p>}
-
-//         <label>Address:</label>
-//         <input type='text' id='address' value={form.address} onChange={handleChange} autoComplete='off' />
-//         {errors.address && <p style={{ color: 'red' }}>{errors.address}</p>}
-
-//         <label>State:</label>
-//         <select id='state' value={form.state} onChange={handleChange}>
-//           <option value="" disabled>Select State</option>
-//           <option value="Tamil Nadu">Tamil Nadu</option>
-//           <option value="Kerala">Kerala</option>
-//           <option value="Karnataka">Karnataka</option>
-//           <option value="Andhra Pradesh">Andhra Pradesh</option>
-//           <option value="Gujarat">Gujarat</option>
-//         </select>
-//         {errors.state && <p style={{ color: 'red' }}>{errors.state}</p>}
-
-//         <label>Country:</label>
-//         <select id='country' value={form.country} onChange={handleChange}>
-//           <option value="" disabled>Select Country</option>
-//           <option value="India">India</option>
-//           <option value="Australia">Australia</option>
-//           <option value="London">London</option>
-//           <option value="Afghanistan">Afghanistan</option>
-//           <option value="Singapore">Singapore</option>
-//         </select>
-//         {errors.country && <p style={{ color: 'red' }}>{errors.country}</p>}
-
-//         <button type="submit" id='button'>Submit</button>
-
-//         <p style={{marginLeft:'120px'}}>Login to the account! <a href="#" id='sign' onClick={goToLogin} className="btn btn-danger d-block"> Sign In</a></p>
-//       </form>
-//     </div>
-//   );
-// }
-
-// export default Register;
-
-
-
-
-
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';  // useLocation to access passed state
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import system from './system.jpg';
 
 function Register() {
+  const [passwordVisible, setPasswordVisible] = React.useState(false);
+const [confirmPasswordVisible, setConfirmPasswordVisible] = React.useState(false);
+
+
+const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible);
+const toggleConfirmPasswordVisibility = () => setConfirmPasswordVisible(!confirmPasswordVisible);
+
   const navigate = useNavigate();
   const goToLogin = () => {
     navigate("/Login");
   };
+  const { state } = useLocation();  // Access passed rowData
+  const { rowData } = state || {};  // If no data, fallback to empty object
 
   // Validation schema with Yup
   const validationSchema = Yup.object({
@@ -187,21 +35,26 @@ function Register() {
   // Formik setup
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      number: '',
-      password: '',
-      confirmPassword: '',
-      address: '',
+      firstName: rowData?.firstName || '',
+      lastName: rowData?.lastName || '',
+      email: rowData?.email || '',
+      number: rowData?.number || '',
+      password: rowData?.password || '',
+      confirmPassword: rowData?.confirmPassword || '',
+      address: rowData?.address || '',
     },
     validationSchema,
     onSubmit: async (values) => {
       const { firstName, lastName, email, number, password, address } = values;
 
       try {
-        const response = await fetch('https://6729a5066d5fa4901b6dcac9.mockapi.io/LoginForm/Login', {
-          method: 'POST',
+        const method = rowData ? 'PUT' : 'POST';  // If editing, use PUT, else POST
+        const url = rowData
+          ? `https://6729a5066d5fa4901b6dcac9.mockapi.io/LoginForm/Login/${rowData.id}`
+          : 'https://6729a5066d5fa4901b6dcac9.mockapi.io/LoginForm/Login';
+
+        const response = await fetch(url, {
+          method,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -215,25 +68,27 @@ function Register() {
         const data = await response.json();
         console.log("Form data submitted:", data);
         alert("Form Submitted Successfully!");
+          // Reset form
+          formik.resetForm();
 
-        // Navigate to the display page with form data
-        navigate('/displayform', { state: { formData: data } });
+        // Navigate back to display page with form data
+        navigate('/displayform');
 
-        // Reset form
-        formik.resetForm();
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        alert("Failed to submit form.");
-      }
+        
+         
+        } catch (error) {
+          console.error("Error submitting form:", error);
+          alert("Failed to submit form.");
+        }
     },
   });
-
+  
   return (
     <div style={{ 
       backgroundImage: `url(${system})`, 
       backgroundSize: 'cover', 
       backgroundPosition: 'center', 
-      height: '100vh',
+      height: '100%',
       display: 'flex', 
       justifyContent: 'center', 
       alignItems: 'center'
@@ -243,35 +98,26 @@ function Register() {
         padding: '20px',
         paddingRight:'40px', 
         borderRadius: '10px', 
+        marginTop: '66px',
+        marginBottom:'10px',
         width: '500px', 
+        // height:'auto',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' 
       }}>
         <h1 style={{ color: '#203864', textAlign: 'center' }}>Register Form</h1>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit} style={{marginTop:'20px'}}>
           <div style={{ display: 'flex', gap: '30px' }}>
-            <div style={{ flex: 1 }}>
+            <div >
               <label>First Name:</label>
-              <input
-                type='text'
-                id='firstName'
-                value={formik.values.firstName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                autoComplete='off'
+              <input  type='text'id='firstName' placeholder='First Name'  value={formik.values.firstName}  onChange={formik.handleChange} autoComplete='off'
                 style={{ width: '100%', padding: '8px', margin: '5px 0' }}
               />
               {formik.touched.firstName && formik.errors.firstName && <p style={{ color: 'red' }}>{formik.errors.firstName}</p>}
             </div>
 
-            <div style={{ flex: 1 }}>
+            <div >
               <label>Last Name:</label>
-              <input
-                type='text'
-                id='lastName'
-                value={formik.values.lastName}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                autoComplete='off'
+              <input  type='text'  id='lastName' placeholder='Last Name'  value={formik.values.lastName}  onChange={formik.handleChange} autoComplete='off'
                 style={{ width: '100%', padding: '8px', margin: '5px 0' }}
               />
               {formik.touched.lastName && formik.errors.lastName && <p style={{ color: 'red' }}>{formik.errors.lastName}</p>}
@@ -279,67 +125,82 @@ function Register() {
           </div>
 
           <label>Email:</label>
-          <input
-            type='text'
-            id='email'
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            autoComplete='off'
+          <input  type='text'  id='email' placeholder='Email' value={formik.values.email} onChange={formik.handleChange} autoComplete='off'
             style={{ width: '100%', padding: '8px', margin: '5px 0' }}
           />
           {formik.touched.email && formik.errors.email && <p style={{ color: 'red' }}>{formik.errors.email}</p>}
 
           <label>Phone no:</label>
-          <input
-            type='number'
-            id='number'
-            value={formik.values.number}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            autoComplete='off'
+          <input type='number' id='number' placeholder='Phone no' value={formik.values.number} onChange={formik.handleChange} autoComplete='off'
             style={{ width: '100%', padding: '8px', margin: '5px 0' }}
           />
           {formik.touched.number && formik.errors.number && <p style={{ color: 'red' }}>{formik.errors.number}</p>}
 
           <label>Password:</label>
-          <input
-            type='password'
-            id='password'
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            autoComplete='off'
-            style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-          />
+            <div style={{ position: 'relative' }}>
+              <input  type={passwordVisible ? 'text' : 'password'} id='password' placeholder='Password' value={formik.values.password} onChange={formik.handleChange} autoComplete='off'
+                style={{ width: '100%', padding: '8px', margin: '5px 0' }}
+               />
+              <i  className={`fa ${passwordVisible ? 'fa-eye-slash' : 'fa-eye'}`}   onClick={togglePasswordVisibility} 
+                style={{ 
+                  position: 'absolute', 
+                  right: '10px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  cursor: 'pointer',
+                  color: '#203864' 
+                }}
+              />
+            </div>
+            {formik.touched.password && formik.errors.password && <p style={{ color: 'red' }}>{formik.errors.password}</p>}
+
+            <label>Confirm Password:</label>
+            <div style={{ position: 'relative' }}>
+              <input type={confirmPasswordVisible ? 'text' : 'password'} id='confirmPassword' placeholder='Confirm Password' value={formik.values.confirmPassword} onChange={formik.handleChange} autoComplete='off'
+                style={{ width: '100%', padding: '8px', margin: '5px 0' }}
+              />
+              <i   className={`fa ${confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'}`}   onClick={toggleConfirmPasswordVisibility} 
+                style={{ 
+                  position: 'absolute', 
+                  right: '10px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)', 
+                  cursor: 'pointer',
+                  color: '#203864' 
+                }}
+              />
+            </div>
+            {formik.touched.confirmPassword && formik.errors.confirmPassword && <p style={{ color: 'red' }}>{formik.errors.confirmPassword}</p>}
+
+          {/* <label>Password:</label>
+          <input  type='password'  id='password'  value={formik.values.password}  onChange={formik.handleChange}  autoComplete='off'
+            style={{ width: '100%', padding: '8px', margin: '5px 0' }}/>
           {formik.touched.password && formik.errors.password && <p style={{ color: 'red' }}>{formik.errors.password}</p>}
 
           <label>Confirm Password:</label>
-          <input
-            type='password'
-            id='confirmPassword'
-            value={formik.values.confirmPassword}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            autoComplete='off'
+          <input  type='password'  id='confirmPassword'  value={formik.values.confirmPassword}  onChange={formik.handleChange} autoComplete='off'
             style={{ width: '100%', padding: '8px', margin: '5px 0' }}
           />
-          {formik.touched.confirmPassword && formik.errors.confirmPassword && <p style={{ color: 'red' }}>{formik.errors.confirmPassword}</p>}
+          {formik.touched.confirmPassword && formik.errors.confirmPassword && <p style={{ color: 'red' }}>{formik.errors.confirmPassword}</p>} */}
 
           <label>Address:</label>
-          <input
-            type='text'
-            id='address'
-            value={formik.values.address}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            autoComplete='off'
-            style={{ width: '100%', padding: '8px', margin: '5px 0' }}
+          <input type='text' id='address' placeholder='Address' value={formik.values.address} onChange={formik.handleChange} autoComplete='off'
+           style={{ width: '100%', padding: '8px', margin: '5px 0' }}
           />
           {formik.touched.address && formik.errors.address && <p style={{ color: 'red' }}>{formik.errors.address}</p>}
 
-          <button type="submit" id='button' style={{ width: '100%', padding: '10px', backgroundColor: '#203864', color: 'white', border: 'none', marginTop: '10px' }}>Submit</button>
-
+          {/* <button type="submit" id='button' style={{ width: '100%', padding: '10px', backgroundColor: '#203864', color: 'white', border: 'none', marginTop: '10px' }}>Submit</button> */}
+       
+         <div style={{ marginBottom: '15px', textAlign: 'left' }}>
+           <label className='check'>
+             <input type="checkbox" id='box'/>
+                I agree to the  <a href="#" style={{ textDecoration: 'underline', color: 'blue' }}> terms and conditions</a>.
+           </label>
+         </div>
+         
+          <button type="submit" id='button' style={{ width: '100%', padding: '10px', backgroundColor: '#203864', color: 'white', border: 'none', marginTop: '10px' }}>
+          {rowData ? 'Update' : 'Submit'}
+        </button>
           <p style={{ textAlign: 'center', marginTop: '10px' }}>
             Login to the account! <a href="#" id='sign' onClick={goToLogin} className="btn btn-danger d-block"> Sign In</a>
           </p>

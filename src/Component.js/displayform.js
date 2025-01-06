@@ -1,87 +1,100 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
-} from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import React, { useEffect, useState } from 'react'; 
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material'; 
+import EditIcon from '@mui/icons-material/Edit'; 
+import DeleteIcon from '@mui/icons-material/Delete'; 
+import { useNavigate } from 'react-router-dom';
 
-function DisplayForm() {
-  const location = useLocation();
+function Datastorage() {
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
-  const initialData = location.state?.formData;
 
-  const [formData, setFormData] = useState(initialData);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://6729a5066d5fa4901b6dcac9.mockapi.io/LoginForm/Login');
+        if (response.ok) {
+          const result = await response.json();
+          setData(result);
+        } else {
+          console.error('Error fetching data');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
 
-  // Handle Edit button click
-  const handleEdit = () => {
-    navigate("/register", { state: { formData } }); // Pass formData to the Register form for editing
+    fetchData();
+  }, []);
+
+  const handleEdit = (row) => {
+    navigate('/register', { state: { rowData: row } });
   };
 
-  // Handle Delete button click
-  const handleDelete = () => {
-    if (window.confirm("Are you sure you want to delete this data?")) {
-      setFormData(null); // Remove the data
+  const handleDelete = async (id) => {
+    try {
+      await fetch(`https://6729a5066d5fa4901b6dcac9.mockapi.io/LoginForm/Login/`, {
+        method: 'DELETE',
+      });
+      setData(data.filter((row) => row.id !== id));
+    } catch (error) {
+      console.error('Error deleting data:', error);
     }
   };
 
-  if (!formData) {
-    return <h2>No data available!</h2>;
-  }
-
   return (
-    <TableContainer component={Paper} style={{ maxWidth: "80%", margin: "20px auto",marginTop:'50px' }}>
+    <div className='paper'style={{backgroundImage:'linear-gradient(pink,skyblue)',height:'100vh',display:'flex'}}>
+      <div style={{display:'block',marginTop:'20px',marginLeft:'30px'}}> 
+        {/* <h3>Flex Proposals</h3> */}
+        <p style={{marginTop:'20px'}}><i class="fa-brands fa-windows"></i> Dashboard</p>
+      
+        <p style={{}}>Proposals</p>
+
+        <p style={{marginTop:'40px'}}>INVENTORY</p>
+        <p><i class="fa-solid fa-building"></i> Operators</p>
+        <p><i class="fa-solid fa-location-dot"></i> centers</p>
+        <p><i class="fa-brands fa-intercom"></i> Inventory</p>
+        <p style={{marginTop:'300px'}}> <i class="fa-solid fa-circle-user"></i> Profile</p>
+        <p><i class="fa-solid fa-gear"></i> Settings</p>
+        <p><i class="fa-solid fa-right-from-bracket"></i>Logout</p>
+        </div>
+      
+    <TableContainer component={Paper} style={{ margin: '20px auto', maxWidth: '80%',marginLeft:'10%' }}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell><b>S/No</b></TableCell>
-            <TableCell><b>NAME</b></TableCell>
-            <TableCell><b>EMAIL</b></TableCell>
-            <TableCell><b>PASSWORD</b></TableCell>
-            <TableCell><b>ADDRESS</b></TableCell>
-            <TableCell><b>ACTION</b></TableCell>
+            <TableCell>ID</TableCell>
+            <TableCell>Firstname</TableCell>
+            <TableCell>Lastname</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Mobile</TableCell>
+            <TableCell>Address</TableCell>
+            <TableCell>Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
-            <TableCell>1</TableCell>
-            <TableCell>{formData.firstName} {formData.lastName}</TableCell>
-            <TableCell>{formData.email}</TableCell>
-            <TableCell>{formData.password}</TableCell>
-            <TableCell>{formData.address}</TableCell>
-            <TableCell>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                {/* Action buttons layout */}
-                <div style={{ display: "flex", flexDirection: "row" }}>
-                  <IconButton
-                    color="primary"
-                    onClick={handleEdit}
-                    style={{ marginRight: "10px" }}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={handleDelete}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </div>
-              </div>
-            </TableCell>
-          </TableRow>
+          {data.map((row) => (
+            <TableRow key={row.id}>
+              <TableCell>{row.id}</TableCell>
+              <TableCell>{row.firstName}</TableCell>
+              <TableCell>{row.lastName}</TableCell>
+              <TableCell>{row.email}</TableCell>
+              <TableCell>{row.number}</TableCell>
+              <TableCell>{row.address}</TableCell>
+              <TableCell>
+                <IconButton onClick={() => handleEdit(row)} style={{ color: 'green',marginLeft:'-50px' }}>
+                  <EditIcon />
+                </IconButton>
+                <IconButton onClick={() => handleDelete(row.id)} style={{ color: 'red',marginLeft:'-50px' }}>
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
+    </div>
   );
 }
 
-export default DisplayForm;
-
+export default Datastorage;
