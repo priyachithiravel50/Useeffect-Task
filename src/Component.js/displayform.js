@@ -43,22 +43,25 @@ function Datastorage() {
 
   return (
     <div className='paper'style={{backgroundImage:'linear-gradient(pink,skyblue)',height:'100vh',display:'flex'}}>
+      {/* <div><i class="fa-solid fa-bell"></i></div> */}
+       
       <div style={{display:'block',marginTop:'20px',marginLeft:'30px'}}> 
-        {/* <h3>Flex Proposals</h3> */}
-        <p style={{marginTop:'20px'}}><i class="fa-brands fa-windows"></i> Dashboard</p>
+        <p style={{marginLeft:'-15px'}}>Flex Proposals</p>
+       {/* <p style={{}}> <i class="fa-solid fa-bell"></i></p> */}
+        <p style={{marginTop:'30px'}}><i class="fa-brands fa-windows"></i> Dashboard</p>
       
-        <p style={{}}>Proposals</p>
+        <p style={{marginTop:'20px'}}>Proposals</p>
 
-        <p style={{marginTop:'40px'}}>INVENTORY</p>
-        <p><i class="fa-solid fa-building"></i> Operators</p>
-        <p><i class="fa-solid fa-location-dot"></i> centers</p>
-        <p><i class="fa-brands fa-intercom"></i> Inventory</p>
-        <p style={{marginTop:'300px'}}> <i class="fa-solid fa-circle-user"></i> Profile</p>
-        <p><i class="fa-solid fa-gear"></i> Settings</p>
-        <p><i class="fa-solid fa-right-from-bracket"></i>Logout</p>
+        <p style={{marginTop:'40px',marginLeft:'-15px'}}>INVENTORY</p>
+        <p style={{marginTop:'30px'}}><i class="fa-solid fa-building"></i> Operators</p>
+        <p style={{marginTop:'20px'}}><i class="fa-solid fa-location-dot"></i> centers</p>
+        <p style={{marginTop:'20px'}}><i class="fa-brands fa-intercom"></i> Inventory</p>
+        <p style={{marginTop:'230px'}}> <i class="fa-solid fa-circle-user"></i> Profile</p>
+        <p style={{marginTop:'30px'}}><i class="fa-solid fa-gear"></i> Settings</p>
+        <p style={{marginTop:'30px'}}><i class="fa-solid fa-right-from-bracket"></i> Logout</p>
         </div>
       
-    <TableContainer component={Paper} style={{ margin: '20px auto', maxWidth: '80%',marginLeft:'10%' }}>
+    <TableContainer component={Paper} style={{ margin: '20px auto', maxWidth: '80%',marginLeft:'10%',marginTop:'50px' }}>
       <Table>
         <TableHead>
           <TableRow>
