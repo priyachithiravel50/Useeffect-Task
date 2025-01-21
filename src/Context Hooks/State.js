@@ -1,10 +1,15 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 function State() {
+  const[State,setState] = useState('')
+
+  const handlestatechange = (e) =>{
+    setState(e.target.value);
+};
   return (
     <div>
          <label>State:</label>
-        <select id='state'>
+        <select id='state' value={State} onChange={handlestatechange}>
           <option value="" disabled>Select State</option>
           <option value="Tamil Nadu">Tamil Nadu</option>
           <option value="Kerala">Kerala</option>
@@ -12,7 +17,6 @@ function State() {
           <option value="Andhra Pradesh">Andhra Pradesh</option>
           <option value="Gujarat">Gujarat</option>
         </select>
-        {/* {errors.state && <p style={{ color: 'red' }}>{errors.state}</p>} */}
       
     </div>
   )

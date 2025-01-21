@@ -4,17 +4,16 @@ import Login from './Component.js/Login';
 import Register from './Component.js/Register';
 import DisplayForm from './Component.js/displayform';
 import Display from './Component.js/display';
-import RegisterForm from './Context Hooks/RegisterForm';
+// import RegisterForm from './Context Hooks/RegisterForm';
 import Country from './Context Hooks/Country';
 import State from './Context Hooks/State';
 
-// import 'primereact/resources/primereact.min.css'; // Core styles
-// import 'primeicons/primeicons.css'; // Icons
-// import 'primeflex/primeflex.css'; // Flex utility (optional)
+
 
 
 function App() {
   return (
+  
     <>
         <BrowserRouter>
         <Routes>
@@ -24,11 +23,15 @@ function App() {
         <Route path='/display' element={<Display/>}/>
         <Route path='/state' element={<State/>}/>
         <Route path='/Country' element={<Country/>}/>
-        <Route path='/registerform' element={<RegisterForm/>}/>
+        <Route path='/registerform' element={<Register/>}/>
+
+        {/* <Route path='/registerform' element={<RegisterForm/>}/> */}
         </Routes>
         </BrowserRouter>
     </>
+    
   );
 }
 
 export default App;
+

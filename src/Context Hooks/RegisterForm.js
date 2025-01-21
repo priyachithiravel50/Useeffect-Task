@@ -1,139 +1,224 @@
-// import React from 'react'
-// // import { useNavigate, useLocation } from 'react-router-dom';  // useLocation to access passed state
-// // import { useFormik } from 'formik';
-// // import * as Yup from 'yup';
-// import system from './system.jpg';
+// import React, { useState, useContext, createContext } from "react";
 
-// function RegisterForm() {
-//   return (
-//     <div>
-//         <div style={{ 
-//       backgroundImage: `url(${system})`, 
-//       backgroundSize: 'cover', 
-//       backgroundPosition: 'center', 
-//       height: '100%',
-//       display: 'flex', 
-//       justifyContent: 'center', 
-//       alignItems: 'center'
-//     }}>
-//       <div style={{ 
-//         backgroundColor: 'rgba(255, 255, 255, 0.8)', 
-//         padding: '20px',
-//         paddingRight:'40px', 
-//         borderRadius: '10px', 
-//         marginTop: '66px',
-//         marginBottom:'10px',
-//         width: '500px', 
-//         // height:'auto',
-//         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' 
-//       }}>
-//         <h1 style={{ color: '#203864', textAlign: 'center' }}>Register Form</h1>
-//         <form onSubmit={formik.handleSubmit} style={{marginTop:'20px'}}>
-//           <div style={{ display: 'flex', gap: '30px' }}>
-//             <div >
-//               <label>First Name:</label>
-//               <input  type='text'id='firstName' placeholder='First Name'  value={formik.values.firstName}  onChange={formik.handleChange} autoComplete='off'
-//                 style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-//               />
-//               {formik.touched.firstName && formik.errors.firstName && <p style={{ color: 'red' }}>{formik.errors.firstName}</p>}
-//             </div>
+// 1. Context Create Pannudhu (Location Context)
+const LocationContext = createContext();
 
-//             <div >
-//               <label>Last Name:</label>
-//               <input  type='text'  id='lastName' placeholder='Last Name'  value={formik.values.lastName}  onChange={formik.handleChange} autoComplete='off'
-//                 style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-//               />
-//               {formik.touched.lastName && formik.errors.lastName && <p style={{ color: 'red' }}>{formik.errors.lastName}</p>}
-//             </div>
-//           </div>
+const App = () => {
+  // 2. Location Provider
+  const LocationProvider = ({ children }) => {
+    const [country, setCountry] = useState("");
+    const [state, setState] = useState("");
+    const [city, setCity] = useState("");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-//           <label>Email:</label>
-//           <input  type='text'  id='email' placeholder='Email' value={formik.values.email} onChange={formik.handleChange} autoComplete='off'
-//             style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-//           />
-//           {formik.touched.email && formik.errors.email && <p style={{ color: 'red' }}>{formik.errors.email}</p>}
+    // Sample data for states and cities based on countries
+    const locations = {
+      India: {
+        states: {
+          "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
+          Kerala: ["Kochi", "Thiruvananthapuram", "Kozhikode"],
+        },
+      },
+      Australia: {
+        states: {
+          "New South Wales": ["Sydney", "Newcastle"],
+          Victoria: ["Melbourne", "Geelong"],
+        },
+      },
+      USA: {
+        states: {
+          California: ["Los Angeles", "San Francisco"],
+          Texas: ["Dallas", "Houston"],
+        },
+      },
+    };
 
-//           <label>Phone no:</label>
-//           <input type='number' id='number' placeholder='Phone no' value={formik.values.number} onChange={formik.handleChange} autoComplete='off'
-//             style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-//           />
-//           {formik.touched.number && formik.errors.number && <p style={{ color: 'red' }}>{formik.errors.number}</p>}
+    // Get states and cities based on selected country
+    const getStatesAndCities = (selectedCountry) => {
+      return locations[selectedCountry] || { states: {}, cities: [] };
+    };
 
-//           <label>Password:</label>
-//             <div style={{ position: 'relative' }}>
-//               <input  type={passwordVisible ? 'text' : 'password'} id='password' placeholder='Password' value={formik.values.password} onChange={formik.handleChange} autoComplete='off'
-//                 style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-//                />
-//               <i  className={`fa ${passwordVisible ? 'fa-eye-slash' : 'fa-eye'}`}   onClick={togglePasswordVisibility} 
-//                 style={{ 
-//                   position: 'absolute', 
-//                   right: '10px', 
-//                   top: '50%', 
-//                   transform: 'translateY(-50%)', 
-//                   cursor: 'pointer',
-//                   color: '#203864' 
-//                 }}
-//               />
-//             </div>
-//             {formik.touched.password && formik.errors.password && <p style={{ color: 'red' }}>{formik.errors.password}</p>}
+    const { states = {}, cities = [] } = getStatesAndCities(country);
 
-//             <label>Confirm Password:</label>
-//             <div style={{ position: 'relative' }}>
-//               <input type={confirmPasswordVisible ? 'text' : 'password'} id='confirmPassword' placeholder='Confirm Password' value={formik.values.confirmPassword} onChange={formik.handleChange} autoComplete='off'
-//                 style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-//               />
-//               <i   className={`fa ${confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'}`}   onClick={toggleConfirmPasswordVisibility} 
-//                 style={{ 
-//                   position: 'absolute', 
-//                   right: '10px', 
-//                   top: '50%', 
-//                   transform: 'translateY(-50%)', 
-//                   cursor: 'pointer',
-//                   color: '#203864' 
-//                 }}
-//               />
-//             </div>
-//             {formik.touched.confirmPassword && formik.errors.confirmPassword && <p style={{ color: 'red' }}>{formik.errors.confirmPassword}</p>}
+    return (
+      <LocationContext.Provider
+        value={{
+          country,
+          setCountry,
+          state,
+          setState,
+          city,
+          setCity,
+          states,
+          cities,
+          name,
+          setName,
+          email,
+          setEmail,
+          password,
+          setPassword,
+        }}
+      >
+        {children}
+      </LocationContext.Provider>
+    );
+  };
 
-//           {/* <label>Password:</label>
-//           <input  type='password'  id='password'  value={formik.values.password}  onChange={formik.handleChange}  autoComplete='off'
-//             style={{ width: '100%', padding: '8px', margin: '5px 0' }}/>
-//           {formik.touched.password && formik.errors.password && <p style={{ color: 'red' }}>{formik.errors.password}</p>}
+  // 3. RegisterForm Component
+  const RegisterForm = () => {
+    const {
+      country,
+      setCountry,
+      state,
+      setState,
+      city,
+      setCity,
+      states,
+      cities,
+      name,
+      setName,
+      email,
+      setEmail,
+      password,
+      setPassword,
+    } = useContext(LocationContext);
 
-//           <label>Confirm Password:</label>
-//           <input  type='password'  id='confirmPassword'  value={formik.values.confirmPassword}  onChange={formik.handleChange} autoComplete='off'
-//             style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-//           />
-//           {formik.touched.confirmPassword && formik.errors.confirmPassword && <p style={{ color: 'red' }}>{formik.errors.confirmPassword}</p>} */}
+    const handleCountryChange = (e) => {
+      const selectedCountry = e.target.value;
+      setCountry(selectedCountry); // Update selected country
+      setState(""); // Reset state and city when country changes
+      setCity("");  // Keep the city state reset until a state is selected.
+    };
 
-//           <label>Address:</label>
-//           <input type='text' id='address' placeholder='Address' value={formik.values.address} onChange={formik.handleChange} autoComplete='off'
-//            style={{ width: '100%', padding: '8px', margin: '5px 0' }}
-//           />
-//           {formik.touched.address && formik.errors.address && <p style={{ color: 'red' }}>{formik.errors.address}</p>}
+    const handleStateChange = (e) => {
+      const selectedState = e.target.value;
+      setState(selectedState); // Update selected state
+      setCity("");  // Reset city until the state is chosen.
+    };
 
-//           {/* <button type="submit" id='button' style={{ width: '100%', padding: '10px', backgroundColor: '#203864', color: 'white', border: 'none', marginTop: '10px' }}>Submit</button> */}
-       
-//          <div style={{ marginBottom: '15px', textAlign: 'left' }}>
-//            <label className='check'>
-//              <input type="checkbox" id='box'/>
-//                 I agree to the  <a href="#" style={{ textDecoration: 'underline', color: 'blue' }}> terms and conditions</a>.
-//            </label>
-//          </div>
-         
-//           <button type="submit" id='button' style={{ width: '100%', padding: '10px', backgroundColor: '#203864', color: 'white', border: 'none', marginTop: '10px' }}>
-//           {rowData ? 'Update' : 'Submit'}
-//         </button>
-//           <p style={{ textAlign: 'center', marginTop: '10px' }}>
-//             Login to the account! <a href="#" id='sign' onClick={goToLogin} className="btn btn-danger d-block"> Sign In</a>
-//           </p>
-//         </form>
-//       </div>
-//     </div>
+    const handleCityChange = (e) => {
+      setCity(e.target.value); // Update selected city
+    };
 
-      
-//     </div>
-//   )
-// }
+    return (
+      <form>
+        <h2>Register Form</h2>
 
-// export default RegisterForm
+        {/* Name Input */}
+        <div className="form-group">
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            className="form-control"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your name"
+          />
+        </div>
+
+        {/* Email Input */}
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            className="form-control"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+          />
+        </div>
+
+        {/* Password Input */}
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+          />
+        </div>
+
+        {/* Country Dropdown */}
+        <div className="form-group">
+          <label htmlFor="country">Country:</label>
+          <select
+            id="country"
+            className="form-control"
+            value={country}
+            onChange={handleCountryChange}
+          >
+            <option value="" disabled>
+              Select Country
+            </option>
+            <option value="India">India</option>
+            <option value="Australia">Australia</option>
+            <option value="USA">USA</option>
+          </select>
+        </div>
+
+        {/* State Dropdown (always shown, but disabled until country is selected) */}
+        <div className="form-group">
+          <label htmlFor="state">State:</label>
+          <select
+            id="state"
+            className="form-control"
+            value={state}
+            onChange={handleStateChange}
+            disabled={!country}  // Disable until a country is selected
+          >
+            <option value="" disabled>
+              Select State
+            </option>
+            {Object.keys(states).map((stateOption, index) => (
+              <option key={index} value={stateOption}>
+                {stateOption}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* City Dropdown (always shown, but disabled until state is selected) */}
+        <div className="form-group">
+          <label htmlFor="city">City:</label>
+          <select
+            id="city"
+            className="form-control"
+            value={city}
+            onChange={handleCityChange}
+            disabled={!state}  // Disable until a state is selected
+          >
+            <option value="" disabled>
+              Select City
+            </option>
+            {states[state]?.map((cityOption, index) => (
+              <option key={index} value={cityOption}>
+                {cityOption}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button type="submit" className="btn btn-primary">
+          Register
+        </button>
+      </form>
+    );
+  };
+
+  return (
+    <LocationProvider>
+      <div className="container">
+        <RegisterForm />
+      </div>
+    </LocationProvider>
+  );
+};
+
+export default App;

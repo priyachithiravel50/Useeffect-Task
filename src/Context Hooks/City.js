@@ -1,10 +1,16 @@
-import React from 'react'
+import React,{useState} from 'react'
 
 function city() {
+    const[City,setCity] = useState('')
+
+    
+  const handlecitychange = (e) =>{
+    setCity(e.target.value);
+};
   return (
     <div>
-        <label>Country:</label>
-        <select id='country' value={form.country} onChange={handleChange}>
+      <label>City:</label>
+        <select id='city'  value={City} onChange={handlecitychange}>
           <option value="" disabled>Select Country</option>
           <option value="Thanjavur">Thanjavur</option>
           <option value="Thiruvarur">Thiruvarur</option>
