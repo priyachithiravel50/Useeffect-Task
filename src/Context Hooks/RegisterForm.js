@@ -1,4 +1,4 @@
-// import React, { useState, useContext, createContext } from "react";
+import React, { useState, useContext, createContext } from "react";
 
 // 1. Context Create Pannudhu (Location Context)
 const LocationContext = createContext();
@@ -17,20 +17,20 @@ const App = () => {
     const locations = {
       India: {
         states: {
-          "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai"],
-          Kerala: ["Kochi", "Thiruvananthapuram", "Kozhikode"],
+          "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Dindugal" , "Nagapattinam" ,"Thanjavur","Thiruvarur"],
+          Kerala: ["Kochi", "Thiruvananthapuram", "Kozhikode", "Wayanad" , "Alapula"],
         },
       },
       Australia: {
         states: {
-          "New South Wales": ["Sydney", "Newcastle"],
-          Victoria: ["Melbourne", "Geelong"],
+          "New South Wales": ["Sydney", "Newcastle","Brisbane" ,"Canberra", "Perth" ],
+          Victoria: ["Melbourne", "Geelong" ,"Ballarat","Bendigo","shepparaton","Wangaratta"],
         },
       },
       USA: {
         states: {
-          California: ["Los Angeles", "San Francisco"],
-          Texas: ["Dallas", "Houston"],
+          California: ["Los Angeles", "San Francisco" , "Santa Monica" ,"Pasadena" ,"Glendale" , "Long Beach"],
+          Texas: ["Dallas", "Houston" , "Austin","Ford Worth" ,"EI Paso" ,"Santa Antonio"],
         },
       },
     };
@@ -171,7 +171,7 @@ const App = () => {
             className="form-control"
             value={state}
             onChange={handleStateChange}
-            disabled={!country}  // Disable until a country is selected
+            selected={!country}  // Disable until a country is selected
           >
             <option value="" disabled>
               Select State
@@ -192,7 +192,7 @@ const App = () => {
             className="form-control"
             value={city}
             onChange={handleCityChange}
-            disabled={!state}  // Disable until a state is selected
+            selected={!state}  // Disable until a state is selected
           >
             <option value="" disabled>
               Select City
