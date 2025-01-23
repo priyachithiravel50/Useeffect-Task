@@ -1,36 +1,63 @@
-import React, { useState, useContext, createContext } from "react";
+import React, { useReducer, useContext, createContext } from "react";
 
-// 1. Context Create Pannudhu (Location Context)
+// 1. Create Location Context
 const LocationContext = createContext();
+
+// Initial state for the reducer
+const initialState = {
+  country: "",
+  state: "",
+  city: "",
+  name: "",
+  email: "",
+  password: "",
+};
+
+// Reducer function to manage state
+const locationReducer = (state, action) => {
+  switch (action.type) {
+    case "SET_COUNTRY":
+      return { ...state, country: action.payload, state: "", city: "" };
+    case "SET_STATE":
+      return { ...state, state: action.payload, city: "" };
+    case "SET_CITY":
+      return { ...state, city: action.payload };
+    case "SET_NAME":
+      return { ...state, name: action.payload };
+    case "SET_EMAIL":
+      return { ...state, email: action.payload };
+    case "SET_PASSWORD":
+      return { ...state, password: action.payload };
+    case "RESET":
+      return initialState;
+    default:
+      return state;
+  }
+};
 
 const App = () => {
   // 2. Location Provider
   const LocationProvider = ({ children }) => {
-    const [country, setCountry] = useState("");
-    const [state, setState] = useState("");
-    const [city, setCity] = useState("");
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [state, dispatch] = useReducer(locationReducer, initialState);
 
     // Sample data for states and cities based on countries
     const locations = {
       India: {
         states: {
-          "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Dindugal" , "Nagapattinam" ,"Thanjavur","Thiruvarur"],
-          Kerala: ["Kochi", "Thiruvananthapuram", "Kozhikode", "Wayanad" , "Alapula"],
+          "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Dindugal", "Nagapattinam", "Thanjavur", "Thiruvarur"],
+          Kerala: ["Kochi", "Thiruvananthapuram", "Kozhikode", "Wayanad", "Alapula"],
         },
       },
       Australia: {
         states: {
-          "New South Wales": ["Sydney", "Newcastle","Brisbane" ,"Canberra", "Perth" ],
-          Victoria: ["Melbourne", "Geelong" ,"Ballarat","Bendigo","shepparaton","Wangaratta"],
+          "New South Wales": ["Sydney", "Newcastle", "Brisbane", "Canberra", "Perth"],
+          Victoria: ["Melbourne", "Geelong", "Ballarat", "Bendigo", "Shepparton", "Wangaratta"],
         },
       },
       USA: {
         states: {
-          California: ["Los Angeles", "San Francisco" , "Santa Monica" ,"Pasadena" ,"Glendale" , "Long Beach"],
-          Texas: ["Dallas", "Houston" , "Austin","Ford Worth" ,"EI Paso" ,"Santa Antonio"],
+          California: ["Los Angeles", "San Francisco", "Santa Monica", "Pasadena", "Glendale", "Long Beach"],
+          Texas: ["Dallas", "Houston", "Austin", "Fort Worth", "El Paso", "San Antonio"],
         },
       },
     };
@@ -40,25 +67,14 @@ const App = () => {
       return locations[selectedCountry] || { states: {}, cities: [] };
     };
 
-    const { states = {}, cities = [] } = getStatesAndCities(country);
+    const { states = {} } = getStatesAndCities(state.country);
 
     return (
       <LocationContext.Provider
         value={{
-          country,
-          setCountry,
           state,
-          setState,
-          city,
-          setCity,
+          dispatch,
           states,
-          cities,
-          name,
-          setName,
-          email,
-          setEmail,
-          password,
-          setPassword,
         }}
       >
         {children}
@@ -68,146 +84,89 @@ const App = () => {
 
   // 3. RegisterForm Component
   const RegisterForm = () => {
-    const {
-      country,
-      setCountry,
-      state,
-      setState,
-      city,
-      setCity,
-      states,
-      cities,
-      name,
-      setName,
-      email,
-      setEmail,
-      password,
-      setPassword,
-    } = useContext(LocationContext);
+    const { state, dispatch, states } = useContext(LocationContext);
 
     const handleCountryChange = (e) => {
-      const selectedCountry = e.target.value;
-      setCountry(selectedCountry); // Update selected country
-      setState(""); // Reset state and city when country changes
-      setCity("");  // Keep the city state reset until a state is selected.
+      dispatch({ type: "SET_COUNTRY", payload: e.target.value });
     };
 
     const handleStateChange = (e) => {
-      const selectedState = e.target.value;
-      setState(selectedState); // Update selected state
-      setCity("");  // Reset city until the state is chosen.
+      dispatch({ type: "SET_STATE", payload: e.target.value });
     };
 
     const handleCityChange = (e) => {
-      setCity(e.target.value); // Update selected city
+      dispatch({ type: "SET_CITY", payload: e.target.value });
+    };
+
+    const handleNameChange = (e) => {
+      dispatch({ type: "SET_NAME", payload: e.target.value });
+    };
+
+    const handleEmailChange = (e) => {
+      dispatch({ type: "SET_EMAIL", payload: e.target.value });
+    };
+
+    const handlePasswordChange = (e) => {
+      dispatch({ type: "SET_PASSWORD", payload: e.target.value });
+    };
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      // Store data in local storage
+      localStorage.setItem("userData", JSON.stringify(state));
+      alert("Data Saved successfully!");
+      dispatch({ type: "RESET" }); // Reset form after submission
     };
 
     return (
-      <form>
+      <form onSubmit={handleSubmit}>
         <h2>Register Form</h2>
-
-        {/* Name Input */}
         <div className="form-group">
           <label htmlFor="name">Name:</label>
-          <input
-            type="text"
-            id="name"
-            className="form-control"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your name"
-          />
+          <input type=" text" id="name" className="form-control" value={state.name} onChange={handleNameChange} placeholder="Enter your name" />
         </div>
 
-        {/* Email Input */}
         <div className="form-group">
           <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-          />
+          <input type="email" id="email" className="form-control" value={state.email} onChange={handleEmailChange} placeholder="Enter your email" />
         </div>
 
-        {/* Password Input */}
         <div className="form-group">
           <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-          />
+          <input type="password" id="password" className="form-control" value={state.password} onChange={handlePasswordChange} placeholder="Enter your password" />
         </div>
 
-        {/* Country Dropdown */}
         <div className="form-group">
           <label htmlFor="country">Country:</label>
-          <select
-            id="country"
-            className="form-control"
-            value={country}
-            onChange={handleCountryChange}
-          >
-            <option value="" disabled>
-              Select Country
-            </option>
+          <select id="country" className="form-control" value={state.country} onChange={handleCountryChange}>
+            <option value="" disabled>Select Country</option>
             <option value="India">India</option>
             <option value="Australia">Australia</option>
             <option value="USA">USA</option>
           </select>
         </div>
 
-        {/* State Dropdown (always shown, but disabled until country is selected) */}
         <div className="form-group">
           <label htmlFor="state">State:</label>
-          <select
-            id="state"
-            className="form-control"
-            value={state}
-            onChange={handleStateChange}
-            selected={!country}  // Disable until a country is selected
-          >
-            <option value="" disabled>
-              Select State
-            </option>
+          <select id="state" className="form-control" value={state.state} onChange={handleStateChange} selected disabled={!state.country}>
+            <option value="" disabled>Select State</option>
             {Object.keys(states).map((stateOption, index) => (
-              <option key={index} value={stateOption}>
-                {stateOption}
-              </option>
+              <option key={index} value={stateOption}>{stateOption}</option>
             ))}
           </select>
         </div>
 
-        {/* City Dropdown (always shown, but disabled until state is selected) */}
         <div className="form-group">
           <label htmlFor="city">City:</label>
-          <select
-            id="city"
-            className="form-control"
-            value={city}
-            onChange={handleCityChange}
-            selected={!state}  // Disable until a state is selected
-          >
-            <option value="" disabled>
-              Select City
-            </option>
-            {states[state]?.map((cityOption, index) => (
-              <option key={index} value={cityOption}>
-                {cityOption}
-              </option>
+          <select id="city" className="form-control" value={state.city} onChange={handleCityChange} selected disabled={!state.state}>
+            <option value="" disabled>Select City</option>
+            {states[state.state]?.map((cityOption, index) => (
+              <option key={index} value={cityOption}>{cityOption}</option>
             ))}
           </select>
         </div>
 
-        <button type="submit" className="btn btn-primary">
-          Register
-        </button>
+        <button type="submit" className="btn btn-primary">Register</button>
       </form>
     );
   };
